@@ -156,7 +156,7 @@ void SplashBackgroundRenderer::embed_image(int pageno)
             if(param.embed_image)
                 html_renderer->tmp_files.add((char*)fn);
             string image_path = (char*)fn;
-	    system((char*)str_fmt("pngquant --force --ext .png \"%s\"", image_path.c_str()));
+	    system((char*)html_renderer->str_fmt("pngquant --force --ext .png \"%s\"", image_path.c_str()));
             dump_image((char*)fn, xmin, ymin, xmax, ymax);
         }
 
