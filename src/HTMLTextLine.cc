@@ -297,7 +297,7 @@ void HTMLTextLine::dump_text(ostream & out)
         stack.pop_back();
     }
 
-    out << "</div>";
+    out << "</div>&nbsp;";
 }
 
 void HTMLTextLine::clear(void)
