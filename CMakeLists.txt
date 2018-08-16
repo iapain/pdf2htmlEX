@@ -175,7 +175,7 @@ add_executable(pdf2htmlEX ${PDF2HTMLEX_SRC})
 target_link_libraries(pdf2htmlEX ${PDF2HTMLEX_LIBS})
 
 add_custom_target(pdf2htmlEX_resources ALL DEPENDS
-    ${CMAKE_SOURCE_DIR}/share/base.min.css
+    ${CMAKE_SOURCE_DIR}/share/base.css
     ${CMAKE_SOURCE_DIR}/share/fancy.min.css
     ${CMAKE_SOURCE_DIR}/share/pdf2htmlEX.min.js
     )
