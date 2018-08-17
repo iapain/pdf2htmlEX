@@ -179,16 +179,6 @@ add_custom_target(pdf2htmlEX_resources ALL DEPENDS
     ${CMAKE_SOURCE_DIR}/share/fancy.css
     )
 
-add_custom_command(OUTPUT
-        ${CMAKE_SOURCE_DIR}/share/base.css
-        ${CMAKE_SOURCE_DIR}/share/fancy.css
-    COMMAND ${CMAKE_SOURCE_DIR}/share/build_css.sh
-    DEPENDS
-        ${CMAKE_SOURCE_DIR}/share/build_css.sh
-        ${CMAKE_SOURCE_DIR}/share/base.css
-        ${CMAKE_SOURCE_DIR}/share/fancy.css
-    )
-
 install (TARGETS pdf2htmlEX DESTINATION bin)
 
 set(PDF2HTMLEX_RESOURCE

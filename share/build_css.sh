@@ -21,5 +21,5 @@ build () {
     cat "$INPUT" > "$OUTPUT")
 }
 
-build "base.css" "base.min.css"
-build "fancy.css" "fancy.min.css"
+build "base.css" "base.css"
+build "fancy.css" "fancy.css"
