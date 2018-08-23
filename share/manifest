@@ -28,40 +28,15 @@
 #############
 # Styles 
 # base CSS styles - Do not modify
-@base.min.css
+@base.css
 
 # fancy CSS styles - Optional
-@fancy.min.css
+@fancy.css
 
 # PDF specific CSS styles - Do not modify
 $css
 
 
-#############
-# UI stuffs, optional
-
-# compatibility.min.js, extracted from PDF.js
-# To support old browsers like IE9
-#TEST_IGNORE_BEGIN
-@compatibility.min.js
-#TEST_IGNORE_END
-
-# entry point of pdf2htmlEX.Viewer
-# You can override default configuration by passing an object to the constructor of Viewer
-# Refer to DEFAULT_CONFIG in viewer.js for possible keys
-# E.g.
-# pdf2htmlEX.defaultViewer = new pdf2htmlEX.Viewer({
-#   'key_handler' : false 
-# });
-#TEST_IGNORE_BEGIN
-@pdf2htmlEX.min.js
-"""
-<script>
-try{
-  pdf2htmlEX.defaultViewer = new pdf2htmlEX.Viewer({});
-}catch(e){}
-</script>
-"""
 #TEST_IGNORE_END
 
 
@@ -93,8 +68,6 @@ $outline
 </div>
 </div>
 """
-#TEST_IGNORE_END
-
 #############
 # The container of PDF pages
 # check base.css for an example and requirements of its CSS styles
@@ -111,16 +84,6 @@ $pages
 # shown when loading a page via ajax
 # The default appearance should be invisible
 # The 'active' class will be added when it is used
-
-#TEST_IGNORE_BEGIN
-"""
-<div class="loading-indicator">
-"""
-@pdf2htmlEX-64x64.png
-"""
-</div>
-"""
-#TEST_IGNORE_END
 
 #############
 # Do not modify
