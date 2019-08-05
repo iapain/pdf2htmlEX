@@ -67,11 +67,11 @@ RUN cd / && \
 # Install pdf2htmlEX
 RUN cd / && \
     git clone https://github.com/iapain/pdf2htmlEX.git && \
-    cd pdf2htmlEX && ls &&\
-    cmake . && make && sudo make install
+    cd pdf2htmlEX && git checkout qapint-hard-work
+    #cmake . && make && sudo make install
 
-RUN rm -rf /root/.ssh && \
-    rm -rf /fontforge* /libspiro* /poppler* /pdf2htmlEX /libiconv* /ttfautohint*
+#RUN rm -rf /root/.ssh && \
+#    rm -rf /fontforge* /libspiro* /poppler* /pdf2htmlEX /libiconv* /ttfautohint*
 
 VOLUME /pdf
 WORKDIR /pdf

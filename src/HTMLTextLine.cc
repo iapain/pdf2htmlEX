@@ -164,7 +164,7 @@ void HTMLTextLine::dump_text(ostream & out)
             << " " << CSS::LEFT_CN             << all_manager.left.install(line_state.x - clip_x1)
             << " " << CSS::HEIGHT_CN           << all_manager.height.install(height / line_state.transform_matrix[3])
             << " " << CSS::BOTTOM_CN           << all_manager.bottom.install(line_state.y - clip_y1)
-	    << " " << CSS:LINE_HEIGHT_CN       << all.manager.line_height.install(line_height)
+	    << " " << CSS::LINE_HEIGHT_CN       << all_manager.line_height.install(line_height)
             ;
         // it will be closed by the first state
     }
@@ -363,7 +363,7 @@ bool HTMLTextLine::optimize_lines(HTMLTextLine* second) {
     double fontSize = ascent;
     //height = ascent;
     int f_lines_count = 1;
-    for(int i=0; i < text.size(); i++) {
+    for(unsigned long int i=0; i < text.size(); i++) {
         if(text[i] == '\n') f_lines_count++;
     }
 

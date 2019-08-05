@@ -87,6 +87,8 @@ public:
     void append_state(const HTMLTextState & text_state);
     void dump_text(std::ostream & out);
 
+    double get_top_offset();
+
     bool text_empty(void) const { return text.empty(); }
     void clear(void);
 
@@ -113,12 +115,12 @@ private:
     const Param & param;
     AllStateManager & all_manager;
 
+    HTMLLineState line_state;
     double ascent, descent;
     double clip_x1, clip_y1;
     double width;
-    double line_height;
     double height;
-    HTMLLineState line_state;
+    double line_height;
 
     std::vector<State> states;
     std::vector<Offset> offsets;
