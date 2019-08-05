@@ -67,7 +67,7 @@ RUN cd / && \
 # Install pdf2htmlEX
 RUN cd / && \
     git clone https://github.com/iapain/pdf2htmlEX.git && \
-    cd pdf2htmlEX && \
+    cd pdf2htmlEX && ls &&\
     cmake . && make && sudo make install
 
 RUN rm -rf /root/.ssh && \

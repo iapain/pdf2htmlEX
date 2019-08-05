@@ -32,6 +32,7 @@ HTMLTextLine::HTMLTextLine (const HTMLLineState & line_state, const Param & para
     ,clip_x1(0)
     ,clip_y1(0)
     ,width(0)
+    ,removed(false)
 { }
 
 void HTMLTextLine::append_unicodes(const Unicode * u, int l, double width)
@@ -143,6 +144,9 @@ void HTMLTextLine::dump_text(ostream & out)
      * Each Line is an independent absolute positioned block
      * so even we have a few states or offsets, we may omit them
      */
+    if(removed)
+	return;
+
     if(text.empty())
         return;
 
@@ -158,8 +162,9 @@ void HTMLTextLine::dump_text(ostream & out)
         out << "<div class=\"" << CSS::LINE_CN
             << " " << CSS::TRANSFORM_MATRIX_CN << all_manager.transform_matrix.install(line_state.transform_matrix)
             << " " << CSS::LEFT_CN             << all_manager.left.install(line_state.x - clip_x1)
-            << " " << CSS::HEIGHT_CN           << all_manager.height.install(ascent)
+            << " " << CSS::HEIGHT_CN           << all_manager.height.install(height / line_state.transform_matrix[3])
             << " " << CSS::BOTTOM_CN           << all_manager.bottom.install(line_state.y - clip_y1)
+	    << " " << CSS:LINE_HEIGHT_CN       << all.manager.line_height.install(line_height)
             ;
         // it will be closed by the first state
     }
@@ -342,8 +347,79 @@ void HTMLTextLine::prepare(void)
         if(cur_descent < descent)
             descent = cur_descent;
     }
+
+    line_height = 1.25;
+    height = ascent;
 }
 
+double HTMLTextLine::get_top_offset() {
+    return line_state.y - clip_y1 - ascent;
+}
+
+bool HTMLTextLine::optimize_lines(HTMLTextLine* second) {
+
+    double top = get_top_offset();
+    double left = line_state.x - clip_x1;
+    double fontSize = ascent;
+    //height = ascent;
+    int f_lines_count = 1;
+    for(int i=0; i < text.size(); i++) {
+        if(text[i] == '\n') f_lines_count++;
+    }
+
+   // height *= f_lines_count;
+   // height += (f_lines_count - 1) * line_height;
+    height = fontSize * line_height * (f_lines_count - 1) + fontSize;
+
+    double top2 = second->get_top_offset();
+    double left2 = second->line_state.x - second->clip_x1;
+    double fontSize2 = second->ascent;
+
+    int last_length = text.size() + 1;
+
+    if (abs(fontSize - fontSize2) < EPS &&
+        abs(left2 - left) < EPS &&
+        top2 - top >= 0 - EPS &&
+        top2 - top < height + fontSize2 + EPS) {
+        text.push_back('\n');
+        f_lines_count++;
+
+        if(abs(line_height - 1.25) < EPS) {
+            line_height = (abs(top2 - top) - EPS) / fontSize;
+        }
+        height = fontSize * line_height * (f_lines_count - 1) + fontSize;
+
+        for(auto state_iter = second->states.begin(); state_iter != second->states.end(); state_iter++) {
+            (*state_iter).start_idx += last_length;
+            states.push_back(*state_iter);
+        }
+        for(auto offset_iter = second->offsets.begin(); offset_iter != second->offsets.end(); offset_iter++) {
+            (*offset_iter).start_idx += last_length;
+            offsets.push_back(*offset_iter);
+        }
+        for(auto text_iter = second->text.begin(); text_iter != second->text.end(); text_iter++) {
+            int symbol = *text_iter;
+            if(symbol < 0) {
+                int n_symbol = decomposed_text.size();
+                decomposed_text.push_back(second->decomposed_text[- symbol - 1]);
+                text.push_back( - n_symbol - 1 );
+            } else {
+                text.push_back(symbol);
+            }
+        }
+
+        // std::cout<<"------------------"<<std::endl;
+        // std::cout<<"top: "<<top<<std::endl
+        //         <<"left: "<<left<<std::endl
+        //         <<"height: "<<height<<std::endl;
+        // std::cout<<"top2: "<<top2<<std::endl
+        //         <<"left2: "<<left2<<std::endl
+        //         <<"height2: "<<height2<<std::endl;
+        // std::cout<<"------------------"<<std::endl;
+        return true;
+    }
+    return false;
+}
 
 void HTMLTextLine::optimize(std::vector<HTMLTextLine*> & lines)
 {

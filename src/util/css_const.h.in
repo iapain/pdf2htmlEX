@@ -50,6 +50,7 @@ const char * const VERTICAL_ALIGN_CN   = "@CSS_VERTICAL_ALIGN_CN@";
 const char * const WHITESPACE_CN       = "@CSS_WHITESPACE_CN@";
 const char * const LEFT_CN             = "@CSS_LEFT_CN@";
 const char * const HEIGHT_CN           = "@CSS_HEIGHT_CN@";
+const char * const LINE_HEIGHT_CN      = "@CSS_LINE_HEIGHT_CN@";
 const char * const WIDTH_CN            = "@CSS_WIDTH_CN@";
 const char * const BOTTOM_CN           = "@CSS_BOTTTOM_CN@";
 

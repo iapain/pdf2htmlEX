@@ -141,7 +141,26 @@ void HTMLTextPage::optimize(void)
 {
     //TODO
     //group lines with same x-axis
-    //collect common states 
+    //collect common states
+    int lines_count = text_lines.size();
+
+    for(int i = 0; i < lines_count; i++) {
+        auto line = text_lines[i];
+        if(line->removed) continue;
+
+        for(int j = 0; j < lines_count; j++) {
+            if(i == j) continue;
+            
+            auto line2 = text_lines[j];
+            if(line2->removed) continue;
+
+            if(line->optimize_lines(line2)) {
+                text_lines[j]->removed = true;
+                optimize();
+                return;
+            }
+        }
+    } 
 }
 
 } // namespace pdf2htmlEX

@@ -160,7 +160,13 @@ struct HTMLRenderer : OutputDev
     // Does not fail on out-of-bound conditions, but return false.
     bool is_char_covered(int index);
     // Currently drawn char (glyph) count in current page.
-    int get_char_count() { return (int)covered_text_detector.get_chars_covered().size(); }
+    int get_char_count() {
+	    int count = 0;
+	    for(auto it = covered_text_detector.get_chars_covered().begin(); it != covered_text_detector.get_chars_covered().end(); it++) {
+		    if((*it) == true) count++;
+	    }
+	    return count;
+    }
 
 protected:
     ////////////////////////////////////////////////////

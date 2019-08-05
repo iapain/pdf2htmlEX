@@ -70,7 +70,7 @@ void SplashBackgroundRenderer::drawChar(GfxState *state, double x, double y,
     if (param.proof || html_renderer->is_char_covered(drawn_char_count)) {
         SplashOutputDev::drawChar(state,x,y,dx,dy,originX,originY,code,nBytes,u,uLen);
     }
-    drawn_char_count++;
+    // drawn_char_count++;
 }
 
 void SplashBackgroundRenderer::beginTextObject(GfxState *state)

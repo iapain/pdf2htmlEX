@@ -287,6 +287,15 @@ public:
     void dump_print_value(std::ostream & out, double value, double scale) { out << "bottom:" << round(value*scale) << "pt;"; }
 };
 
+class LineHeightManager : public StateManager<double, LineHeightManager>
+{
+public:
+    static const char * get_css_class_name (void) { return CSS::LINE_HEIGHT_CN; }
+    double default_value(void) { return 0; }
+    void dump_value(std::ostream & out, double value) { out << "line-height:" << round(value); }
+    void dump_print_value(std::ostream & out, double value, double scale) { out << "line-height:" << round(value) ; }
+};
+
 class HeightManager : public StateManager<double, HeightManager>
 {
 public:
@@ -433,6 +442,7 @@ struct AllStateManager
     HeightManager                    height;
     WidthManager                      width;
     LeftManager                        left;
+    LineHeightManager           line_height;
     BGImageSizeManager         bgimage_size;
 };
 
