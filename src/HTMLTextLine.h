@@ -121,6 +121,7 @@ private:
     double width;
     double height;
     double line_height;
+    double font_size;
 
     std::vector<State> states;
     std::vector<Offset> offsets;
