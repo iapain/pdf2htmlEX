@@ -18,7 +18,7 @@ void HTMLRenderer::drawImage(GfxState * state, Object * ref, Stream * str, int w
 
     return OutputDev::drawImage(state,ref,str,width,height,colorMap,interpolate,maskColors,inlineImg);
 
-#if 0
+//#if 0
     if(maskColors)
         return;
 
@@ -61,7 +61,7 @@ void HTMLRenderer::drawImage(GfxState * state, Object * ref, Stream * str, int w
 
 
     ++ image_count;
-#endif
+//#endif
 }
 
 void HTMLRenderer::drawSoftMaskedImage(GfxState *state, Object *ref, Stream *str,
