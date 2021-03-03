@@ -1,12 +1,8 @@
-FROM alpine:3.10
+FROM alpine:3.12
 
-ENV REFRESHED_AT 20190726
+ENV REFRESHED_AT 20210303
 
-ARG SSH_PRIVATE_KEY
-RUN mkdir /root/.ssh/
-RUN echo "${SSH_PRIVATE_KEY}" > /root/.ssh/id_rsa
-
-RUN apk add --no-cache alpine-sdk xz libxml2-dev pango-dev m4 libtool perl autoconf automake coreutils python-dev zlib-dev freetype-dev glib-dev cmake tiff-dev readline-dev jpeg-dev giflib-dev flex bison gettext gettext-dev cairo cairo-dev libpng python freetype glib libintl libxml2 libltdl pango openjpeg-dev openjpeg openjpeg-tools
+RUN apk add --no-cache alpine-sdk xz libxml2-dev pango-dev m4 libtool perl autoconf automake coreutils python2-dev zlib-dev freetype-dev glib-dev cmake tiff-dev readline-dev jpeg-dev giflib-dev flex bison gettext gettext-dev cairo cairo-dev libpng python2 freetype glib libintl libxml2 libltdl pango openjpeg-dev openjpeg openjpeg-tools
 
 # Install libspiro
 RUN cd / && \
@@ -39,7 +35,7 @@ RUN cd / && \
 RUN ln -s /usr/include/openjpeg-2.3/*  /usr/include/
 # Install poppler
 RUN cd / && \
-    wget http://poppler.freedesktop.org/poppler-0.62.0.tar.xz && \
+    wget https://poppler.freedesktop.org/poppler-0.62.0.tar.xz && \
     tar -xf poppler-0.62.0.tar.xz && \
     cd poppler-0.62.0 && \
     mkdir build && cd build && \
@@ -48,7 +44,7 @@ RUN cd / && \
 
 # Install poppler-data
 RUN cd / && \
-    wget http://poppler.freedesktop.org/poppler-data-0.4.9.tar.gz && \
+    wget https://poppler.freedesktop.org/poppler-data-0.4.9.tar.gz && \
     tar -xf poppler-data-0.4.9.tar.gz && \
     cd poppler-data-0.4.9 && \
     make prefix=/usr/local install
@@ -58,7 +54,7 @@ ENV PKG_CONFIG_PATH $PKG_CONFIG_PATH:/usr/lib64/pkgconfig
 
 # Install ttfautohint
 RUN cd / && \
-    wget http://download.savannah.gnu.org/releases/freetype/ttfautohint-0.97.tar.gz && \
+    wget https://download.savannah.gnu.org/releases/freetype/ttfautohint-0.97.tar.gz && \
     tar -xf ttfautohint-0.97.tar.gz && \
     cd ttfautohint-0.97 && \
     ./configure --without-qt && \
@@ -68,7 +64,8 @@ RUN cd / && \
 RUN cd / && \
     git clone https://github.com/iapain/pdf2htmlEX.git && \
     cd pdf2htmlEX && \
-    cmake . && make && sudo make install
+    git checkout 4b7ebd2627e4caa94945ed542d17c267fcb4f784 && \
+    cmake . && make && make install
 
 RUN rm -rf /root/.ssh && \
     rm -rf /fontforge* /libspiro* /poppler* /pdf2htmlEX /libiconv* /ttfautohint*
