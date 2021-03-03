@@ -31,7 +31,7 @@
 // under GPL version 2 or later
 //
 // Copyright (C) 2012 Hib Eris <hib@hiberis.nl>
-// Copyright (C) 2012 Adrian Johnson <ajohnson@redneon.com>
+// Copyright (C) 2012, 2017 Adrian Johnson <ajohnson@redneon.com>
 //
 // To see a description of the changes please see the Changelog file that
 // came with your tarball or type make ChangeLog if you are building from git
@@ -41,10 +41,9 @@
 
 /* This implements a box filter that supports non-integer box sizes */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include <poppler-config.h>
 
+#include <cstdint>
 #include <stdint.h>
 #include <stdio.h>
 #include <assert.h>

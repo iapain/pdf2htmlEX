@@ -79,7 +79,7 @@
   position:relative;
   background-color:white;
   overflow: hidden;
-  margin:0; 
+  margin:0 auto; 
   border:0; /* required by pdf2htmlEX.js for page visibility test */
 }
 .@CSS_PAGE_CONTENT_BOX_CN@ { /* content of a page */

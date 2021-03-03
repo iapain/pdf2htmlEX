@@ -1,32 +1,130 @@
 language: cpp
+
+sudo: true
+
+os:
+  - linux
+  - osx
+
+env:
+  global:
+    - POPPLER_NAME="poppler-0.63.0"
+    - POPPLER_SOURCE="https://gitlab.freedesktop.org/poppler/poppler.git"
+    - FONTFORGE_SOURCE="https://github.com/fontforge/fontforge.git"
+    - LIBUNINAMESLIST_SOURCE="https://github.com/fontforge/libuninameslist.git"
+
+
 compiler: gcc
+
 addons:
+  apt:
+    update: true
+    packages:
+      - build-essential
+      - autoconf
+      - gcc
+      - pkg-config
+      - git
+      - cmake
+      - ca-certificates
+      - libfreetype6-dev
+      # Poppler-specific packages
+      - libfontconfig1-dev
+      - libjpeg-dev
+      - libnss3-dev
+      # libuninameslist-specific packages
+      - automake
+      - libtool
+      # fontforge-specific packages
+      - libltdl-dev
+      - python-dev
+      - libglib2.0-dev
+      - libxml2-dev
+      - libspiro-dev
+      - gettext
+      # pdf2htmlEX-specific packages
+      - default-jre
+      - libcairo2-dev
+      - libpango1.0-dev
+  homebrew:
+    packages:
+      - autoconf
+      - pkg-config
+      - git
+      - cmake
+      - freetype
+      # Poppler-specific packages
+      - fontconfig
+      - jpeg
+      - nss
+      # libuninameslist-specific packages
+      - automake
+      - libtool
+      # fontforge-specific packages
+      - python
+      - glib
+      - xml2
+      - libspiro
+      - gettext
+      # pdf2htmlEX-specific packages
+      - cairo
+      - pango
   sauce_connect: true
+
+matrix:
+  fast_finish: true
+  allow_failures:
+    - os: osx # Until the build passes, then re-enable.
+
 before_install:
-  - sudo add-apt-repository ppa:fontforge/fontforge --yes
-  - sudo add-apt-repository ppa:coolwanglu/pdf2htmlex --yes
-  - sudo apt-get update -qq
-  - sudo apt-get install -qq libpoppler-dev libpoppler-private-dev libspiro-dev libcairo-dev libpango1.0-dev libfreetype6-dev libltdl-dev libfontforge-dev python-imaging python-pip firefox xvfb
-  - sudo pip install selenium sauceclient
+# Clone and build poppler
+  - git clone ${POPPLER_SOURCE}
+  - cd poppler; 
+    git checkout tags/${POPPLER_NAME} -b poppler-local;
+    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=${TRAVIS_BUILD_DIR}/usr -DENABLE_XPDF_HEADERS=ON -DENABLE_LIBOPENJPEG=none .;
+    make;
+    make install
+  - cd ${TRAVIS_BUILD_DIR}
+
+# Install libuninameslist
+  - git clone ${LIBUNINAMESLIST_SOURCE}
+  - cd libuninameslist;
+    git checkout tags/20180701 -b libuninameslist-local;
+    autoreconf -i;
+    automake;
+    ./configure --prefix=${TRAVIS_BUILD_DIR}/usr;
+    make;
+    make install
+  - cd ${TRAVIS_BUILD_DIR}
+
+# Install fontforge
+  - git clone ${FONTFORGE_SOURCE}
+  - cd fontforge;
+    git checkout tags/20170731 -b fontforge-local;
+    ./bootstrap;
+    ./configure --disable-programs --disable-python-extension --disable-python-scripting --prefix=${TRAVIS_BUILD_DIR}/usr;
+    make;
+    make install;
+    sudo ldconfig
+  - cd ${TRAVIS_BUILD_DIR}
+
+# Test setup
+  - pip install --user Pillow selenium sauceclient
   - export DISPLAY=:99.0
   - test/start_xvfb.sh
   - pushd /
   - python -m SimpleHTTPServer 8000 >/dev/null 2>&1 &
   - popd
   - sleep 5
-before_script: 
-  - cmake -DENABLE_SVG=ON .
+
+before_script:
+  - export LD_LIBRARY_PATH=${TRAVIS_BUILD_DIR}/usr/lib:$LD_LIBRARY_PATH
+  - export PKG_CONFIG_PATH=${TRAVIS_BUILD_DIR}/usr/lib/pkgconfig:$PKG_CONFIG_PATH
+  - patch < CMakeLists.txt.patch
+  - mkdir build && cd build && cmake -DENABLE_SVG=ON -DCMAKE_INSTALL_PREFIX=${TRAVIS_BUILD_DIR}/usr ..
+
 script:
   - make
   - P2H_TEST_REMOTE=1 ctest --output-on-failure --verbose
-  - sudo make install
-  - /usr/local/bin/pdf2htmlEX -v
-branches:
-  only:
-    - master
-    - incoming
-    - wl
-env:
-  global:
-    - secure: V0yGXROTAsRc3ExcECj7X/CrJLbodUeqZyfQGkA6x0iLV7Lh8/hgTjSsvuj7ef/DIWMqJ5cAIzZuXiF0KIxiVllF1v0I3w+LScxynT7B1NsyH16hvGIc7EvrsRmGVeTv8n9I+cCIwQxjtliNKfeZjV4Rk2+u6LioUzTszmW2etc=
-    - secure: Q5ZSrdFEgN0JvUp90nY5Wh58iukmGZQ2EW7crOibWH2yuUsxAnMELxpY+9yV3+eA7kbjJf/I0NCa5ZY1gkxK60ugUj+zuUDTL+BV1XCbO37e0uwh3ae99iyQWpXc8e8wBp10sthoX7U6Hvypa5tD9r1JJib8jxJV/MzIFpb7H9s=
+  - make install
+  - ${TRAVIS_BUILD_DIR}/usr/bin/pdf2htmlEX -v

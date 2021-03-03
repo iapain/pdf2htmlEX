@@ -9,7 +9,7 @@ option(ENABLE_SVG "Enable SVG support, for generating SVG background images and 
 
 include_directories(${CMAKE_SOURCE_DIR}/src)
 
-set(PDF2HTMLEX_VERSION "0.14.6")
+set(PDF2HTMLEX_VERSION "0.15.0")
 set(ARCHIVE_NAME pdf2htmlex-${PDF2HTMLEX_VERSION})
 add_custom_target(dist
     COMMAND git archive --prefix=${ARCHIVE_NAME}/ HEAD
@@ -19,7 +19,7 @@ add_custom_target(dist
 find_package(PkgConfig)
 
 
-pkg_check_modules(POPPLER REQUIRED poppler>=0.25.0)
+pkg_check_modules(POPPLER REQUIRED poppler>=0.62.0)
 include_directories(${POPPLER_INCLUDE_DIRS})
 link_directories(${POPPLER_LIBRARY_DIRS})
 set(PDF2HTMLEX_LIBS ${PDF2HTMLEX_LIBS} ${POPPLER_LIBRARIES})
@@ -81,7 +81,7 @@ endif()
 if(CYGWIN)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++0x")
 else()
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -pthread")
 endif()
 
 # check the C++11 features we need
